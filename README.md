@@ -67,93 +67,79 @@ Below is a simplified flowchart of our core pipeline:
 ```
 
 #### Project Workflow: Amazon ML Challenge 2025
-Stepwise Breakdown
+##### Stepwise Breakdown
 1. Data Collection
-Import image URLs, product descriptions, and target prices from Amazon datasets.
+- Import image URLs, product descriptions, and target prices from Amazon datasets.
 
-Download and validate images.
+- Download and validate images.
 
 2. Preprocessing
-Clean product descriptions (HTML tag stripping, emoji/unicode removal via BeautifulSoup & regex).
+- Clean product descriptions (HTML tag stripping, emoji/unicode removal via BeautifulSoup & regex).
 
-Prepare text for both CLIP and Gemma embedding models.
+- Prepare text for both CLIP and Gemma embedding models.
 
-Images checked/converted to RGB format.
+- Images checked/converted to RGB format.
 
 3. Embedding Generation
-Text Embedding (Gemma):
+- Text Embedding (Gemma):
 
-SentenceTransformer with Gemma-300M model.
+- SentenceTransformer with Gemma-300M model.
 
-Handles long text via custom chunking and average pooling.
+- Handles long text via custom chunking and average pooling.
 
-Image Embedding (CLIP):
+- Image Embedding (CLIP):
 
-OpenCLIP (ViT-L-14, laion2B-s32B-b82K) for image and text modality.
+- OpenCLIP (ViT-L-14, laion2B-s32B-b82K) for image and text modality.
 
-Features normalized, tokenized, batched.
+- Features normalized, tokenized, batched.
 
-Output: For each sample: [Gemma Embeddings | CLIP Text Embeddings | CLIP Image Embeddings]
+- Output: For each sample: [Gemma Embeddings | CLIP Text Embeddings | CLIP Image Embeddings]
 
 4. Feature Fusion & Engineering
-All embeddings for each product concatenated horizontally to build multi-modal feature vectors.
+- All embeddings for each product concatenated horizontally to build multi-modal feature vectors.
 
-Train/validation split, features normalized using StandardScaler.
+- Train/validation split, features normalized using StandardScaler.
 
 5. Model Architecture
-SimpleNN (PyTorch)
-Input: Fused embeddings (2304 units: 768×3)
+- SimpleNN (PyTorch)
+- Input: Fused embeddings (2304 units: 768×3)
 
-Layers:
+- Layers:  [Linear → BatchNorm → Dropout] × 5
 
-[Linear → BatchNorm → Dropout] × 5
+- Output: Single price prediction
 
-Output: Single price prediction
+- Training: Adam optimizer, Early stopping, Metric logging.
 
-Training: Adam optimizer, Early stopping, Metric logging.
-
-python
-class SimpleNN(nn.Module):
-    # (See training_simplenn.ipynb for details)
+    
 6. Evaluation
-Primary metric: SMAPE
+- Primary metric: SMAPE
 
-Additional: R², MAE, RMSE
+- Additional: R², MAE, RMSE
 
-Best Validation SMAPE: 54.6
+- Best Validation SMAPE: 54.6
 
-Training monitored with all metrics per epoch for transparency.
+- Training monitored with all metrics per epoch for transparency.
 
 7. Prediction & Output
-Model and scaler checkpoint bundled for reproducibility.
+- Model and scaler checkpoint bundled for reproducibility.
 
-Predictions on holdout test set written to CSV.
+- Predictions on holdout test set written to CSV.
 
-Results
-Score: SMAPE ≈ 54.6 (final validation, competitive for the challenge)
+## Results
+- Score: SMAPE ≈ 54.6 (final validation, competitive for the challenge)
 
-Model: SimpleNN on fused Gemma + CLIP embeddings
+- Model: SimpleNN on fused Gemma + CLIP embeddings
 
-Technical Stack: PyTorch, SentenceTransformers, OpenCLIP, pandas, scikit-learn, tqdm
+- Technical Stack: PyTorch, SentenceTransformers, OpenCLIP, pandas, scikit-learn, tqdm
 
-How to Run
-Install dependencies (pip install -r requirements.txt)
 
-Download images via image_download.ipynb
+### Code Structure
+- utils.py — Download helpers
 
-Run embedding_generation.ipynb to generate all embeddings
+- image_download.ipynb — Parallel image download
 
-Train & evaluate using training_simplenn.ipynb
+- embedding_generation.ipynb — Embedding pipeline
 
-Final predictions with test-output.ipynb
+- training_simplenn.ipynb — Model training, SMAPE calculation, logging
 
-Code Structure
-utils.py — Download helpers
-
-image_download.ipynb — Parallel image download
-
-embedding_generation.ipynb — Embedding pipeline
-
-training_simplenn.ipynb — Model training, SMAPE calculation, logging
-
-test-output.ipynb — Bundled model inference on test set
+- test-output.ipynb — Bundled model inference on test set
