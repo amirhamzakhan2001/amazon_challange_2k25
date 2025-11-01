@@ -19,27 +19,29 @@ Goal: Build a robust, scalable ML pipeline to efficiently leverage cross-modal s
 
 ## Process Map & Workflow
 Below is a simplified flowchart of our core pipeline:
-                   ┌─────────────────────┐
-                   │    Data Collection  │
+
+```
+                   ┌───────────────────────┐
+                   │    Data Collection    │
                    │(images, texts, prices)│
-                   └─────────┬───────────┘
-                             │
-                ┌────────────▼────────────┐
-                │      Preprocessing      │
-                │- Clean text (HTML/tags) │
-                │- Validate images        │
-                └────────────┬────────────┘
+                   └──────────┬────────────┘
+                              │
+                ┌─────────────▼────────────┐
+                │      Preprocessing       │
+                │- Clean text (HTML/tags)  │
+                │- Validate images         │
+                └────────────┬─────────────┘
                              │
          ┌──────────────┬────▼───────┬─────────────┐
          │              │            │             │
 ┌────────▼───┐   ┌──────▼─────┐  ┌───▼────────┐    │
 │ Gemma      │   │  CLIP      │  │  Feature   │    │
 │ Text Embed │   │ Text/Image │  │ Extraction │    │
-└──────┬─────┘   └─────┬──────┘  └─────┬─────┘    │
+└──────┬─────┘   └─────┬──────┘  └──────┬─────┘    │
        │               │                │          │
        └───────────────┴────────────┬───┘          │
-                                   │               │
-                        ┌──────────▼──────────────┐
+                                    │              │
+                        ┌───────────▼─────────────┐
                         │   Feature Fusion        │
                         │(Concatenate all embeds) │
                         └───────────┬─────────────┘
@@ -49,7 +51,7 @@ Below is a simplified flowchart of our core pipeline:
                         │ (SimpleNN - PyTorch)    │
                         └───┬─────────┬───────────┘
                             │         │
-                    ┌───────▼┐     ┌──▼────────┐
+                    ┌───────▼──┐   ┌──▼────────┐
                     │Validation│   │ Hyperparam│
                     │(SMAPE,   │   │ Tuning    │
                     │R², MAE,  │   │           │
@@ -62,6 +64,7 @@ Below is a simplified flowchart of our core pipeline:
               └───────────────────────┘
 
 
+```
 
 #### Project Workflow: Amazon ML Challenge 2025
 Stepwise Breakdown
