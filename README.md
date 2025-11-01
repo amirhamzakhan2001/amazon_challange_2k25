@@ -68,19 +68,19 @@ Below is a simplified flowchart of our core pipeline:
 
 #### Project Workflow: Amazon ML Challenge 2025
 ##### Stepwise Breakdown
-1. Data Collection
+##### 1. Data Collection
 - Import image URLs, product descriptions, and target prices from Amazon datasets.
 
 - Download and validate images.
 
-2. Preprocessing
+##### 2. Preprocessing
 - Clean product descriptions (HTML tag stripping, emoji/unicode removal via BeautifulSoup & regex).
 
 - Prepare text for both CLIP and Gemma embedding models.
 
 - Images checked/converted to RGB format.
 
-3. Embedding Generation
+##### 3. Embedding Generation
 - Text Embedding (Gemma):
 
 - SentenceTransformer with Gemma-300M model.
@@ -95,12 +95,12 @@ Below is a simplified flowchart of our core pipeline:
 
 - Output: For each sample: [Gemma Embeddings | CLIP Text Embeddings | CLIP Image Embeddings]
 
-4. Feature Fusion & Engineering
+##### 4. Feature Fusion & Engineering
 - All embeddings for each product concatenated horizontally to build multi-modal feature vectors.
 
 - Train/validation split, features normalized using StandardScaler.
 
-5. Model Architecture
+##### 5. Model Architecture
 - SimpleNN (PyTorch)
 - Input: Fused embeddings (2304 units: 768×3)
 
@@ -111,7 +111,7 @@ Below is a simplified flowchart of our core pipeline:
 - Training: Adam optimizer, Early stopping, Metric logging.
 
     
-6. Evaluation
+##### 6. Evaluation
 - Primary metric: SMAPE
 
 - Additional: R², MAE, RMSE
@@ -120,7 +120,7 @@ Below is a simplified flowchart of our core pipeline:
 
 - Training monitored with all metrics per epoch for transparency.
 
-7. Prediction & Output
+##### 7. Prediction & Output
 - Model and scaler checkpoint bundled for reproducibility.
 
 - Predictions on holdout test set written to CSV.
